@@ -1,0 +1,95 @@
+<?php
+
+require_once dirname(__FILE__).'/data.php';
+
+// define mysql server connections.
+define ('mysql_addr', 'localhost');
+define ('mysql_user', 'jchae');
+define ('mysql_pass', 'sibeliusviom16:regrets');
+
+$db = 'otters_and_pandas';
+$table = 'hermes_subscribers';
+
+if (!($connection = mysql_connect(constant('mysql_addr'), constant('mysql_user'), constant('mysql_pass'))))
+		die ('Could not connect to database');
+
+if (!($connection = mysql_select_db($db,$connection)))
+		die ('Could not connect to database');
+
+mysql_query('CREATE TABLE IF NOT EXISTS `hermes_subscribers` (
+	`ID` INT NOT NULL AUTO_INCREMENT,
+	`Name` TINYTEXT NULL,
+	`Email` TINYTEXT NULL,
+	`Submitted` DATETIME NOT NULL DEFAULT 0,
+	PRIMARY KEY (`id`)
+	);');
+
+//Cooper DB functions
+
+function mysql_fetch_rowsarr($result){
+    if ($result) {
+        while($row=mysql_fetch_assoc($result)){
+            $ret[]=$row;
+        }
+	return $ret;
+    }
+    return $result;
+}
+
+function loadDB($query){
+
+	$result = mysql_query($query);
+	if(!$result) 
+		return false;
+	return mysql_fetch_rowsarr($result);
+
+}
+
+// mail("jchae@oberlin.edu", "APPLES", "Here I am!", "From: jcbng@yahoo.com");
+
+?>
+
+<!DOCTYPE html>
+
+<div style="text-align: center;">
+	<div style="display: inline-block; margin: auto;">
+		<h1>Messengersandmuses.org</h1>
+		<p style="font-weight: bold;" id="status">
+			<?php
+				if (isset($status[$_GET['status']])) {
+					echo '<span style="color: red;">'.$status[$_GET['status']].'</span>';
+				}
+			?>
+
+		</p>
+	</div>
+</div>
+
+<?php
+
+echo 
+	'<html>
+		<head>
+			<title>Sign up</title>
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<link rel="stylesheet" href="/assets/styles/subscribe.css" type="text/css">
+		</head>
+		
+	<body>
+		<div style="text-align: center;">
+			<p style="font-size: 30px;">
+				Enable children and youth to pursue <br /> their musical dreams
+			</p>
+			<p> <img id="muse" src="/assets/images/baby-cartoon-angel.jpg" /> </p>
+			<p style="font-size: 30px;">
+				Coming soon!
+			</p>
+			<form action="subscribe.php" method="post">
+				<input type="submit" value="Join us here!" style="background:none;border:0;color:#8B1C62; font-size: 18px; cursor: pointer; text-decoration: underline;" />
+			</form>
+		</div>
+	</body>';
+	mysql_close();
+?>
+	
+</html>

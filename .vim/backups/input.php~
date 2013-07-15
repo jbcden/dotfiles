@@ -1,0 +1,64 @@
+<?php
+
+require_once dirname(__FILE__).'/data.php';
+
+$db = $_POST['db'];
+$table = $_POST['table'];
+$email = $_POST['email'];
+$last = $_POST['last'];
+$comments = $_POST['questions/comments'];
+$first = $_POST['first'];
+// print_r($_POST);
+date_default_timezone_set('EDT');
+$date = date('Y/m/d H:i:s', time());
+
+// define mysql server connections.
+define ('mysql_addr', 'localhost');
+define ('mysql_user', 'jchae');
+define ('mysql_pass', 'sibeliusviom16:regrets');
+
+if (!($connection = mysql_connect(constant('mysql_addr'), constant('mysql_user'), constant('mysql_pass'))))
+		die ('Could not connect: ' . mysql_error());
+
+if (!($connection = mysql_select_db($db,$connection)))
+		die ('Error: ' . mysql_error());
+
+$matches = Array();
+
+if (!preg_match('%^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]{3,4}$%i', $email, $matches)) {
+	$ret = 3; // invalid email
+} else if (empty($last) || empty($first)) {
+	$ret = 2; // invalid name
+} else {
+	$name = strtolower($name);
+	$query = 'INSERT INTO `'.$table.'` (email, submitted_on, `questions/comments`, last, first) VALUES ("'.$email.' ","'.$date.'","'.$comments.'","'.$last.'","'.$first.'")';
+	if (mysql_query($query)) {
+		$ret = 1; // success!
+	} else if (strpos(strtolower(mysql_error()), 'duplicate entry') !== false) {
+		$ret = 0; // this user already exists
+	} else {
+		$ret = 4; // random error, please try again.
+	}
+}
+
+//echo mysql_error();
+mysql_close();
+// print_r($matches);
+if ($ret == 1) {
+
+	$msg = "Hello ".$name.",\r\n\r\nThank you for subscribing to our service. Expect to hear from us soon!\r\nBest,\r\nYoon-Chan Kim and Jacob Chae";
+	$headers = 'From: no-reply@messengersandmuses.com' . "\r\n" .
+	'Reply-To: messengersandmuses@gmail.com' . "\r\n";  
+
+// $time_pre = microtime(true);
+	mail($email, "Welcome to Messengers and Muses", $msg, $headers);
+// $time_post = microtime(true);
+// $exec_time = $time_post - $time_pre;
+// echo $exec_time;
+	header('Location: /coming_soon/index.php?status='.$ret);
+} else {
+	header('Location: /coming_soon/subscribe.php?status='.$ret);
+}
+
+
+

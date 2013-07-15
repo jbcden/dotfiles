@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enabling php-mode and syntax highlighting in Emacs - Eric London&#x27;s Blog</title>
+
+
+  <!-- CSS -->
+
+  <!-- 960gs -->
+  <link href="/assets/reset-a49f13623997f7ee4ea0588919edbb1a.css" media="all" rel="stylesheet" type="text/css" />
+  <link href="/assets/text-9da3cbcca461737cd684645f8b099f5d.css" media="all" rel="stylesheet" type="text/css" />
+  <link href="/assets/960_24_col-00785bc628c94050e1154e65e1996b9a.css" media="all" rel="stylesheet" type="text/css" />
+
+  <!-- google-code-prettify -->
+  <link href="/assets/prettify-4b3f3a00204b5e971e505e54b8e827e6.css" media="all" rel="stylesheet" type="text/css" />
+
+  <link href="/assets/dock-bdb1b2e0f56a4eda08354f9fe6a1941a.css" media="all" rel="stylesheet" type="text/css" />
+
+  <link href="/assets/application-cc099732a879ad2a0295b9b3cfe253f7.css" media="all" rel="stylesheet" type="text/css" />
+
+  <!-- Javascript -->
+  <script src="/assets/prettify-92b24307f35d83932210b2c1e4b7fbf6.js" type="text/javascript"></script>
+  <script src="/assets/application-a3a9b704edd7c88cb17ce3064a1c7c20.js" type="text/javascript"></script>
+
+  <meta content="authenticity_token" name="csrf-param" />
+<meta content="y271vgfKC3o1yxARG3nrtu8He4QQwV6vJ5VjXwkJ95w=" name="csrf-token" />
+</head>
+<body>
+
+  <img id='body_background' src='/assets/body_background.jpg' />
+
+  <div id='menu-bar'>
+    <ul>
+  <li><a href="/">Home</a></li>
+  <li><a href="/recent-posts">Recent Posts</a></li>
+  <li><a href="/search">Search</a></li>
+  <li><a href="/contact">Contact</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/posts.rss">RSS</a></li>
+    <!--
+    <li>
+      <a href="/users/sign_in">Login</a>
+    </li>
+    -->
+</ul>
+
+  </div>
+  <div id='menu-bar-spacer'></div>
+
+  <div class='container_24 controller_posts'>
+
+
+    
+<div class='osx_wrapper'>
+
+  <div class='osx_top'>
+    <h1>Enabling php-mode and syntax highlighting in Emacs</h1>
+  </div>
+
+  <div class='osx_middle'>
+
+    <div class='grid_5 col_left alpha'>
+      <div class='osx_inner'>
+        <div class='post_avatar'><img alt="Avatar-eric-london" src="/assets/avatar-eric-london-09a58510f3c8c25ff02643d26df4a28f.jpg" /></div><div class='post_created'>Created by Eric London on 2008-08-26</div><strong>Tags:</strong><br/><ul class='tags'><li><a href="/tag/bash">bash</a></li><li><a href="/tag/code">code</a></li><li><a href="/tag/emacs">emacs</a></li><li><a href="/tag/global-font-lock-mode">global-font-lock-mode</a></li><li><a href="/tag/php">php</a></li><li><a href="/tag/php-mode">php-mode</a></li><li><a href="/tag/shell">shell</a></li><li><a href="/tag/syntax%20highlighting">syntax highlighting</a></li><li><a href="/tag/text%20editor">text editor</a></li><li><a href="/tag/usability">usability</a></li><li><a href="/tag/vim">vim</a></li></ul><div class='share_links'>
+  <strong>Share This:</strong><br/>
+  <span class='st_twitter' displayText='Tweet'></span>
+  <span class='st_facebook' displayText='Facebook'></span>
+  <span class='st_linkedin' displayText='LinkedIn'></span>
+  <span class='st_email' displayText='Email'></span>
+  <span class='st_sharethis' displayText='ShareThis'></span>
+</div>
+
+<script type="text/javascript">var switchTo5x=true;</script>
+<script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+<script type="text/javascript">stLight.options({publisher: "ur-913440c-f95c-7686-77b6-bd2ffff76394"}); </script><a href="/posts/82/comments/0/new">New Comment</a><br/>&nbsp;
+      </div>
+    </div>
+    <div class='grid_19 col_right omega'>
+      <div class='osx_inner'>
+        <div class='rss_note'>Please note: the content on this page orginates from <a href='http://ericlondon.com'>ericlondon.com</a>.<br/></div>Sometimes I am forced to edit PHP files outside Eclipse. Here's a quick guide to make your text editor (in this case, Emacs) a little more user friendly by enabled php-mode and syntax highlighting.<br /><br />First, download php-mode and stick it in your ~/.emacs.d folder: <br /><pre class="prettyprint"><code class="prettyprint">
+cd ~/.emacs.d
+wget http://php-mode.svn.sourceforge.net/svnroot/php-mode/tags/php-mode-1.4.0/php-mode.el
+</code></pre><br /><br />Next, paste the following code into your ~/.emacs file. This will enable php-mode and syntax highlighting. As you can see, I also added a default file extension for .module files.<br /><pre class="prettyprint"><code class="prettyprint">
+(global-font-lock-mode 1)
+
+(require &#x27;php-mode)
+(setq auto-mode-alist
+  (append &#x27;((&quot;\.php$&quot; . php-mode)
+            (&quot;\.module$&quot; . php-mode))
+              auto-mode-alist))
+</code></pre><br /><br />Now, when you open .php or .module files, your code will be syntax highlighted and emacs will be tailored to editing PHP code. Screen shot:<br /><br /><img src="/system/uploads/12/original/syntax-highlighting.jpg" /><br /><br /><strong>Updated: 2013-04-02</strong><br/><br /><br />If you want to enable syntax highlighting on vim (mac osx):<br /><br />Check out <a href='https://github.com/chriskempson/tomorrow-theme' target='_blank'>Tomorrow Theme</a> (which I use primary with Sublime Text).<br /><br />1. Download the package and copy Tomorrow-Night.vim to /usr/share/vim/vim73/colors.<br /><br />2. Added a ~/.vimrc file with:<br /><br />syntax on<br />colo Tomorrow-Night<br />
+      </div>
+    </div>
+    <div class='clear'></div>
+
+  </div>
+
+  <div class='osx_bottom'></div>
+
+</div>
+
+<div class='osx_wrapper'>
+
+  <div class='osx_top'>
+    <h1>Comments</h1>
+  </div>
+
+  <div class='osx_middle'>
+
+    <div class='grid_5 col_left alpha'>
+      <div class='osx_inner'>
+        &nbsp;
+      </div>
+    </div>
+    <div class='grid_19 col_right omega'>
+      <div class='osx_inner'>
+        <div class='comments'><ul class='depth_1'><li class=''><div class='title'>Package for Ubuntu</div><div class='created'>Created by Anonymous on 2009-07-30</div><div class='content'>$ sudo apt-get install php-mode<br /><br />works on Ubuntu. (If you're a noob, like me.)</div><div class='links'><a href="/posts/82/comments/88/new">Reply</a></div><ul class='depth_2'><li class=''><div class='title'>thanks</div><div class='created'>Created by Eric.London on 2009-07-31</div><div class='content'>No love for Centos :(<br /><br /><pre class="prettyprint"><code class="prettyprint">
+[Eric@VirtualBox-Centos ~]$ yum search php-mode
+Loaded plugins: fastestmirror
+Warning: No matches found for: php-mode
+No Matches found
+</code></pre></div><div class='links'><a href="/posts/82/comments/89/new">Reply</a></div><ul class='depth_3'><li class=''><div class='title'>Ubuntu Lucid</div><div class='created'>Created by Anonymous on 2010-04-21</div><div class='content'>This works now:<br /><br />aptitude install emacs-snapshot emacs-goodies-el php-elisp ruby-elisp python-elisp <br /><br />The package is called php-elisp in ubuntu now...</div><div class='links'><a href="/posts/82/comments/90/new">Reply</a></div></li></ul></li></ul></li><li class=''><div class='title'>parentheses typo</div><div class='created'>Created by Anonymous on 2011-07-13</div><div class='content'>The ~.emacs code should be this:<br /><br /><pre class="prettyprint"><code class="prettyprint">
+(global-font-lock-mode 1)
+
+(require &#x27;php-mode)
+(setq auto-mode-alist
+  (append &#x27;((&quot;\.php$&quot; . php-mode)
+            (&quot;\.module$&quot; . php-mode))
+              auto-mode-alist)))
+</code></pre><br /><br />Note the additional trailing parentheses at the very end.</div><div class='links'><a href="/posts/82/comments/91/new">Reply</a></div><ul class='depth_2'><li class=''><div class='title'>Correction</div><div class='created'>Created by Anonymous on 2011-08-16</div><div class='content'>Regarding the anonymous comment: pff.. there is no third parenthesis, what are you talking about?! grrr -_-'<br /><br />On the other hand there is one correction worth being mentionned, in some cases, you might need to add this before invoking the php mode:<br /><br /><pre class="prettyprint"><code class="prettyprint">(add-to-list &#x27;load-path &quot;~/.emacs.d&quot;)</code></pre><br /><br />Thanks,<br />Chess.</div><div class='links'><a href="/posts/82/comments/92/new">Reply</a></div><ul class='depth_3'><li class=''><div class='title'>mac os x</div><div class='created'>Created by mevdev on 2013-04-03</div><div class='content'>Adding the load-path command made it work for me in mac os x 10.8 (of course you'll need 'brew' to use wget).</div><div class='links'><a href="/posts/82/comments/823/new">Reply</a></div></li></ul></li><li class=''><div class='title'>Thanks</div><div class='created'>Created by Ajinkya Kulkarni on 2012-09-06</div><div class='content'>I also had to include third parentheses to get it work.</div><div class='links'><a href="/posts/82/comments/758/new">Reply</a></div></li></ul></li><li class=''><div class='title'>Thanks!</div><div class='created'>Created by DOKKA on 2012-12-25</div><div class='content'>This post just made my day. I've been trying to figure out how to add modes forever.</div><div class='links'><a href="/posts/82/comments/768/new">Reply</a></div><ul class='depth_2'><li class=''><div class='title'>Here's the working version in full</div><div class='created'>Created by xandrani on 2013-03-13</div><div class='content'>(global-font-lock-mode 1)<br /><br />(add-to-list 'load-path "~/.emacs.d")<br /><br />(require 'php-mode)<br />(setq auto-mode-alist<br />  (append '(("\.php$" . php-mode)<br />            ("\.module$" . php-mode))<br />              auto-mode-alist))<br /></div><div class='links'><a href="/posts/82/comments/800/new">Reply</a></div></li></ul></li><li class=''><div class='title'>It works!</div><div class='created'>Created by anonymous on 2013-04-04</div><div class='content'>Thanks a lot people,<br /><br />On Debian (4 and 5) this works:<br />Under aptitude, install the package<br />php-elisp<br /><br /><br />Thanks a lot!</div><div class='links'><a href="/posts/82/comments/824/new">Reply</a></div></li></ul></div>
+      </div>
+    </div>
+    <div class='clear'></div>
+
+  </div>
+
+  <div class='osx_bottom'></div>
+
+</div>
+
+
+  </div>
+
+  <div class='dock'>
+  <ul>
+    <li>
+      <a href='/'>
+        <em><span>Home</span></em>
+        <img src='/assets/dock_home.png' alt='Home' />
+      </a>
+    </li>
+    <li>
+      <a href='/recent-posts'>
+        <em><span>Recent Posts</span></em>
+        <img src='/assets/dock_recent.png' alt='Recent Posts' />
+      </a>
+    </li>
+    <li>
+      <a href='/search'>
+        <em><span>Search</span></em>
+        <img src='/assets/dock_search.png' alt='Search' />
+      </a>
+    </li>
+    <li>
+      <a href='/contact'>
+        <em><span>Contact</span></em>
+        <img src='/assets/dock_contact.png' alt='Contact' />
+      </a>
+    </li>
+    <li>
+      <a href='/about'>
+        <em><span>About</span></em>
+        <img src='/assets/dock_about.png' alt='About' />
+      </a>
+    </li>
+    <li>
+      <a href='/posts.rss'>
+        <em><span>RSS</span></em>
+        <img src='/assets/dock_rss.png' alt='RSS' />
+      </a>
+    </li>
+      <!--
+      <li>
+        <a href='/users/sign_in'>
+          <em><span>Login</span></em>
+          <img src='/assets/dock_login.png' alt='Login' />
+        </a>
+      </li>
+      -->
+  </ul>
+</div>
+
+  <div id='dock-spacer'></div>
+
+  <!-- Javascript -->
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-2526857-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

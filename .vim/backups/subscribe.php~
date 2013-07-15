@@ -1,0 +1,79 @@
+<?php
+
+require_once dirname(__FILE__) . '/data.php';
+
+// define mysql server connections.
+// define ('mysql_addr', 'localhost');
+// define ('mysql_user', 'jchae');
+// define ('mysql_pass', 'sibeliusviom16:regrets');
+
+$table = "hermes_subscribers";
+$db = "otters_and_pandas";
+// print_r($_POST);
+
+// if (!($connection = mysql_connect(constant('mysql_addr'), constant('mysql_user'), constant('mysql_pass'))))
+// 		die ('Could not connect: ' . mysql_error());
+// 		// die ('Could not connect to database: ' . mysql_error());
+// echo $db;
+// if (!($connection = mysql_select_db($db,$connection)))
+// 		die (mysql_error());
+// 		// die ('Could not connect to databases');
+
+?>
+
+<!DOCTYPE html>
+
+<div style="text-align: center;">
+	<div style="display: inline-block; margin: auto;">
+		<h1>Messengersandmuses.org</h1>
+		<p style="font-weight: bold;" id="status">
+			<?php
+				if (isset($status[$_GET['status']])) {
+					echo '<span style="color: red;">'.$status[$_GET['status']].'</span>';
+				}
+			?>
+
+		</p>
+	<h2>Join us!</h2>
+	<p style="font-size: 16px; font-weight: bold">You'll hear from us soon!</p>
+	</div>
+</div>
+
+
+
+
+<?php
+
+echo
+	'<html>
+		<head>
+			<title>Messengers and Muses Subscribe</title>
+			<link rel="stylesheet" href="/assets/styles/subscribe.css" type="text/css">
+		</head>
+
+		<body>
+			<form  action="input.php" method="post">
+				<div class="container">
+					<div class="inner">
+					<div style="text-align: right; left: 20%; position: relative;">
+						<p> <img style="height:150px; width:150px;  id="angel" src="/assets/images/cartoon-angel-blue.jpg" /> </p> 
+					</div>
+						<table>
+							<tr style="text-align: center;"><td style="text-align: right;">Last Name</td> <td><input type="text" name="last" style="font-size: 12pt;" /></td></tr>
+<tr style="text-align: center;"><td style="text-align: right;">First Name</td> <td><input type="text" name="first" style="font-size: 12pt;" /></td></tr>
+							<tr><td style="text-align: right;">Email</td> <td><input type="text" name="email" style="font-size: 12pt;" /></td></tr>
+<tr><td style="text-align: right;">Questions/Comments</td><td><textarea name="questions/comments" rows="4" cols="30"></textarea></td></tr>
+						</table>
+						<input type="submit" value="Subscribe" />
+						<input type="hidden" name="table" value="'.$table.'" />
+						<input type="hidden" name="db" value="'.$db.'" />
+					</div>
+				</div>
+			</form>
+		</body>
+</html>';
+
+
+
+
+

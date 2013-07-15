@@ -1,0 +1,206 @@
+class ResedParser
+
+	#########################################################
+	#
+	# @csv -- optional parameter, list of people leaving csv.
+	# @text -- SWARSTAT files in text file format.
+	# @codes -- hash translation of SWARSTAT codes.
+	#
+	#########################################################
+	def initialize(text, csv = "")
+		@csv = File.open("#{csv}").readlines unless csv.empty?
+	  if text.class == String
+	    f = File.open("#{text}")
+	    @text = f.readlines
+	  elsif text.class == Array
+	    @text = text
+	  else
+	  	raise TypeError, "Wrong argument type, String or Array expected: got #{text.class}"
+	  end
+	  @codes = {
+	  	"0" => "undeclared", 
+	  	"7" => "finish away", 
+	  	"8" => "cancel", 
+	  	"A" => "Academic Leave", 
+	  	"C" => "Continuing", 
+	  	"E" => "Employee", 
+	  	"F" => "first time", 
+	  	"G" => "graduated", 
+	  	"H" => "high school student", 
+	  	"J" => "ocean student", 
+	  	"L" => "leave of absence", 
+	  	"P" => "post baccalaureate", 
+	  	"R" => "returning", 
+	  	"S" => "non-degree special students", 
+	  	"T" => "transfer", 
+	  	"V" => "visiting", 
+	  	"W" => "withdrawn", 
+	  	"X" => "first spring time - prospect", 
+	  	"Y" => "transfer spring - prospect", 
+	  	"Z" => "visiting spring - prospect"
+	  }
+	end
+	
+	  #####################################################
+		#
+		# to_csv -- takes the current ResedParser object and
+		# 	outputs it in CSV format
+		#
+		#####################################################
+		def to_csv
+			positions = get_whiteSpace
+			# p positions
+
+			i = 0
+			final = ""
+
+			@text.each do |line|
+				while i < positions.length
+					if i == 0
+						final <<= '"'<< line[0..positions[i]].strip!<< '",'
+					elsif  i + 1 == positions.length
+						final <<= '"'<< line[positions[i-1]...positions[i]].strip!<< "\"\n" 
+					else
+						final <<= '"'<< line[positions[i-1]..positions[i]].strip!<< '",'
+					end
+					i += 1
+				end
+				i = 0 
+			end
+			final
+		end
+
+		#####################################################
+		#
+		# get_whiteSpace -- takes current ResedParser object
+		# 	and returns an array of indices where each line
+		# 	contains whitespace.
+		#
+		#####################################################
+		def get_whiteSpace
+			pos = [] #[0]
+			i = 0
+
+			while i <= @text[0].length
+				break_yet = 1 # are we at whitespace yet? if not, break out of for and move on to next char
+				for j in @text
+					if j[i] != " "
+						break_yet = 0
+						break
+					end
+				end
+				if break_yet == 0
+					i += 1
+					next
+				end
+				pos.push(i.to_i) unless pos.include?(i.to_i) # only include current index if it is not already included
+				# puts "i is #{i}"
+				i += 1
+			end
+			pos.push(@text[0].length)
+			pos
+		end
+
+	#####################################################
+	#
+	# swarstat_text_parse -- takes current ResedParser object
+	# 	and returns an aray of hashes containing student
+	#   information paired with swarstat keys.
+	#
+	#####################################################
+	def swarstat_text_parse
+		students = []
+		headers = []
+		arr = []
+
+		@text.each do |line|
+			if line[0, 1] == "T"
+				students <<= line
+			elsif line[0, 2] == "Id"
+				headers <<= line
+			end
+		end
+
+		# create "zipable" header and student information for hashing!
+		students = ResedParser.new(students).to_csv.split("\n").select { |entry| entry.gsub!("\"", "") if entry.match(/[a-zA-Z0-9]/) }.map { |e| e.gsub(/[,]+/, ",") }
+		headers = ResedParser.new(headers).to_csv.split(",").select { |entry| entry.gsub!("\"", "") if entry.match(/[a-zA-Z0-9]/) }.map { |e| e.gsub(/[,]+/, ",") }
+		headers.delete_at(headers.index("LegacyId")) # remove LegacyId -- it is always blank
+		
+		students.each do |student|
+			student.gsub!(", ", ":") # replace "," in between last and first name with ":" to keep from incorrect parsing with split
+			hash = Hash[headers.zip(student.split(","))] # create a kickass hash!
+			
+			hash.delete("Coll(Old)")
+			hash.delete("Coll(New)")
+			hash.delete("Resd(Old)")
+			hash.delete("Resd(New)")
+			hash.delete("Stst(Old)")
+			hash.delete("Stst(New)")
+			
+			hash["Styp(Old)"] = @codes[hash["Styp(Old)"]] unless hash["Styp(Old)"].length > 1
+			hash["Styp(New)"] = @codes[hash["Styp(New)"]] unless hash["Styp(New)"].length > 1
+			# p @codes[hash["Styp(Old)"]]
+			arr <<= hash
+		end
+		arr
+	end		
+
+	#######################################################
+	#
+	# on_leave -- takes the @csv and the T#, leave type,
+	# 	leave dates and return date and returns an array
+	# 	of hashes.
+	#
+	#######################################################
+	def on_leave
+		mappings = []
+	  headers = []
+	  arr = []
+	  @csv.join("\r").split("\r").each do |person|
+		  if ! person.empty? and person[0..2] != "L N"
+		  	temp = person.split(",")
+		  	mappings << "#{temp[2]}, #{temp[3]}, #{temp[5]}, #{temp[6]}"
+		  end
+	  end
+	  mappings
+	end
+
+	def to_s
+	  puts "#{@text.join(" ")}\n #{@csv}"
+	end
+
+	#######################################################
+	#
+	# swarstat -- uses all helper functions to produce
+	# 	a csv of all info for SWARSTAT.
+	#
+	#######################################################
+	def swarstat
+		swarstat = self.swarstat_text_parse
+		leave = self.on_leave
+		finalCsv = ""
+
+		# add headers to finalCsv, with additional headers to be added
+		swarstat.each do |p|
+			leave.each do |line|
+				person = line.split
+				if person[0] == p["Id"]
+					finalCsv << swarstat[0].keys.join(",").gsub!("\n", "") << ", type2, leave, return, on_leave" << "\n" if finalCsv.empty?
+					p["type2"] = person[1]
+					p["leave"] = person[2]
+					p["return"] = person[3]
+					p["on_leave"] = true
+				else
+				  finalCsv << swarstat[0].keys.join(",").gsub!("\n", "") << ",on_leave" << "\n" if finalCsv.empty?
+					p["on_leave"] = false
+				end
+			end
+			finalCsv << p.values.join(",") << "\n"
+		end
+		finalCsv
+	end
+
+end
+
+# swarstat_test = ResedParser.new("test.txt", "DEPARTURE 2013-2014.csv")
+# puts swarstat_test.swarstat
